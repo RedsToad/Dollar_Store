@@ -1,0 +1,15 @@
+{
+    "id": "dollar_store", 
+    "name": "Dollar Store",
+    "author": ["Reds"],
+    "description": "Makes the first shop only house items that are purchasable",
+    "prefix": "dollar_store",
+    "main_file": "src/main.lua",
+    "badge_colour": "1a652a",
+    "priority": 0,
+    "dependencies": [
+        "Steamodded (>=1.0.0~ALPHA-1304a)"
+    ],
+    "conflicts": [],
+    "version": "1.0.0"
+}
