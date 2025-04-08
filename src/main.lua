@@ -7,7 +7,7 @@ SMODS.Atlas {
 
 local orig_get_current_pool = get_current_pool
 local function is_past_first_shop()
-    return G.GAME.first_shop_buffoon or G.GAME.round_resets.blind_states.Big ~= "Upcoming" or G.GAME.round_resets.blind_states.Boss ~= "Upcoming"
+    return G.GAME.first_shop_buffoon or G.GAME.round_resets.blind_states.Small == "Upcoming" or G.GAME.round_resets.blind_states.Big ~= "Upcoming" or G.GAME.round_resets.blind_states.Boss ~= "Upcoming"
 end
 
 function get_current_pool(_type, _rarity, _legendary, _append)
