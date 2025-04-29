@@ -5,10 +5,16 @@ SMODS.Atlas {
     path = "icon.png",
 }
 
-local orig_get_current_pool = get_current_pool
 local function is_past_first_shop()
-    return G.GAME.first_shop_buffoon or G.GAME.round_resets.blind_states.Small == "Upcoming" or G.GAME.round_resets.blind_states.Big ~= "Upcoming" or G.GAME.round_resets.blind_states.Boss ~= "Upcoming"
+    return G.GAME.first_shop_buffoon or G.GAME.round_resets.blind_states.Small == "Upcoming" or
+        G.GAME.round_resets.blind_states.Big ~= "Upcoming" or G.GAME.round_resets.blind_states.Boss ~= "Upcoming"
 end
+
+local function small(x)
+    return type(x) == "table" and x:to_number() or x
+end
+
+local orig_get_current_pool = get_current_pool
 
 function get_current_pool(_type, _rarity, _legendary, _append)
     local pool, pool_key = orig_get_current_pool(_type, _rarity, _legendary, _append)
@@ -20,12 +26,15 @@ function get_current_pool(_type, _rarity, _legendary, _append)
     if _type == "Voucher" or _type == "Booster" or _append ~= "sho" then
         return pool, pool_key
     end
+
     for i = 1, #pool do
         local current = G.P_CENTERS[pool[i]]
-        if G.GAME and (current or {}).cost and current.cost > G.GAME.dollars then
+
+        if G.GAME and (current or {}).cost and small(current.cost) > small(G.GAME.dollars) then
             pool[i] = "UNAVAILABLE"
         end
     end
+
     for i, v in ipairs(pool) do
         if v ~= "UNAVAILABLE" then
             return pool, pool_key
@@ -58,6 +67,7 @@ function get_current_pool(_type, _rarity, _legendary, _append)
 end
 
 local orig_set_edition = Card.set_edition
+
 function Card:set_edition(edition, immediate, silent)
     if is_past_first_shop() then
         orig_set_edition(self, edition, immediate, silent)
@@ -66,7 +76,7 @@ function Card:set_edition(edition, immediate, silent)
 
     orig_set_edition(self, edition, immediate, true)
 
-    if self.cost > G.GAME.dollars then
+    if small(self.cost) > small(G.GAME.dollars) then
         orig_set_edition(self, nil, immediate, silent)
     elseif not silent then
         orig_set_edition(self, edition, immediate, silent)
